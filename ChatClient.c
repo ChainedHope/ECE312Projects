@@ -11,11 +11,18 @@
 #define BUF_SIZE 256
 #define CLADDR_LEN 100
 
+
+/*
+*  error - prints the error message and exits the program
+*/
 void error(char *msg) {
 	perror(msg);
 	exit(1);
 }
 
+/*
+* Recieves messages from the socket.
+*/
 void * receiveMessage(void * socket) {
 	int sockfd, ret;
 	char buffer[BUF_SIZE];
@@ -33,6 +40,9 @@ void * receiveMessage(void * socket) {
 	close(sockfd);
 }
 
+/*
+* Sends Messages to the socket for transmission
+*/
 void * sendMessage(void * socket) {
 	char buffer[BUF_SIZE];
 	int sockfd, set;
@@ -52,19 +62,25 @@ void * sendMessage(void * socket) {
 
 }
 
+/*
+* Main Function
+*/
 int main(int argc, char *argv[]) {
-	int sockfd, portno, n;
+	//Variable setup
+	int sockfd, portno, n;  
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
 	char buffer[BUF_SIZE];
 	pthread_t rThread, sThread;
 	int ret, set;
-
+	
+	//Checks for command-line inputs
 	if(argc < 2){
 		printf(stderr, "Usage %s hostname\n", argv[0]);
 		exit(0);
 	}
-	portno=PORT;
+	
+	portno=PORT; // Sets the port to the constant
 	sockfd= socket(AF_INET, SOCK_STREAM, 0);
 	if(sockfd < 0)
 		error("Error: Failed to Open Socket");
@@ -79,6 +95,10 @@ int main(int argc, char *argv[]) {
 	if(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))<0){
 		error("Error: Could not connect");
 	}
+	
+	//This while loop doesnt actually have to be here..... 
+	//Originally it was used to check connections but that caused some bugs
+	//Now the threads check for a connection in their while loops
 	while(1){
 		//creating a new thread for receiving messages from the client
 		if (ret = pthread_create(&rThread, NULL, receiveMessage,
@@ -96,6 +116,7 @@ int main(int argc, char *argv[]) {
 		break;
 	}
 
+	//Kill the threads!
 	pthread_exit(NULL);
 	return 0;
 }
