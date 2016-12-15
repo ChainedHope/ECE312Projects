@@ -1,20 +1,3 @@
-/*
- * ChatClient.c
- *
- *  Created on: Dec 14, 2016
- *      Author: Kozlowlw
- */
-
-
-/*
- * ChatServer.c
- *
- *  Created on: Dec 14, 2016
- *      Author: Kozlowlw
- */
-
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
