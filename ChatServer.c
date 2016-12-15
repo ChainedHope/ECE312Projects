@@ -10,11 +10,13 @@
 #define BUF_SIZE 256
 #define CLADDR_LEN 100
 
+// See ChatClient.c
 void error(char *msg) {
 	perror(msg);
 	exit(1);
 }
 
+//See ChatClient.c
 void * receiveMessage(void * socket) {
 	int sockfd, ret;
 	char buffer[BUF_SIZE];
@@ -32,13 +34,16 @@ void * receiveMessage(void * socket) {
 	close(sockfd);
 }
 
+
+//See ChatClient.c
 void * sendMessage(void * socket) {
 	char buffer[BUF_SIZE];
 	int sockfd, set;
 	sockfd = (int) socket;
 
 	while(1){
-		memset(buffer, 0, strlen(buffer);
+		memset(buffer, 0, strlen(buffer); 
+		//Seems to be a small bug if you go over the buffer limit or spam chat
 		fgets(buffer, BUF_SIZE, stdin);
 		if((write(sockfd, buffer, strlen(buffer))) == -1){
 			printf("Error sending message\n");
@@ -50,7 +55,8 @@ void * sendMessage(void * socket) {
 	close(sockfd);
 
 }
-
+		       
+		       
 int main(int argc, char *argv[]) {
 	int sockfd, newsockfd, portno, clilen;
 	char buffer[BUF_SIZE];
@@ -77,6 +83,8 @@ int main(int argc, char *argv[]) {
 	printf("Waiting for a connection...\n");
 	listen(sockfd, 5);
 	clilen = sizeof(cli_addr);
+	
+	//The while loop is checking to see if the socket is taking transimissions
 	while (newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen)) {
 		inet_ntop(AF_INET, &(cli_addr.sin_addr), clientAddr, CLADDR_LEN);
 		printf("Connection accepted from %s...\n", clientAddr);
@@ -95,12 +103,13 @@ int main(int argc, char *argv[]) {
 
 		}
 	}
-
+	
+	//Prints an error if the connection was refused
 	if (newsockfd < 0)
 		error("ERROR on accept");
-//        close(newsockfd);
 	close(sockfd);
 
+	//Kill all the threads!
 	pthread_exit(NULL);
 	return 0;
 }
